@@ -1,0 +1,315 @@
+{% extends "base.html" %}
+<html>
+
+<body>
+    {% block content %} {% load staticfiles %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/post.css' %}">
+    <div class="container">
+        <div class="row">
+            {% if post.type == "ivc" %}
+            <div class="col-md-12">
+                <div class="card blue-grey darken-2">
+                    <a href="post/{{ post.id }}">
+                        <div class="card-image">
+                            <img src="{{ post.url }}">
+                            <span class="card-title grey-text">{{ post.title }}
+                            </span>
+                        </div>
+                    </a>
+                    <div class="card-action">
+                        <a class="voteNum" id="votesFor{{ post.id }}">NA</a>
+                        <a id="{{ post.id }}upvote" class="upvote">
+                            <i class="material-icons">arrow_upward</i>
+                        </a>
+                        <a id="{{ post.id }}downvote" class="downvote">
+                            <i class="material-icons">arrow_downward</i>
+                        </a>
+                        {% if post.postedBy == request.user.username %}
+                        <a href="post/{{ post.id }}/del">
+                            <i class="material-icons">delete</i>
+                        </a>
+                        {% endif %}
+                        <div class="chip right">By {{ post.postedBy }} </div>
+                        <div class="chip right">{{ post.created_date }}</div>
+                    </div>
+                </div>
+            </div>
+            {% elif post.type == "txt" %}
+            <div class="col-md-12">
+                <div class="card blue-grey darken-2">
+                    <a href="post/{{ post.id }}">
+                        <div class="card-content white-text">
+                            <span class="card-title">{{ post.title }}</span>
+                            <p>{{ post.body }}</p>
+                        </div>
+                    </a>
+                    <div class="card-action">
+                        <a class="voteNum" id="votesFor{{ post.id }}">NA</a>
+                        <a id="{{ post.id }}upvote" class="upvote">
+                            <i class="material-icons">arrow_upward</i>
+                        </a>
+                        <a id="{{ post.id }}downvote" class="downvote">
+                            <i class="material-icons">arrow_downward</i>
+                        </a>
+                        {% if post.postedBy == request.user.username %}
+                        <a href="post/{{ post.id }}/del">
+                            <i class="material-icons">delete</i>
+                        </a>
+                        {% endif %}
+                        <div class="chip right">By {{ post.postedBy }} </div>
+                        <div class="chip right">{{ post.created_date }}</div>
+                    </div>
+                </div>
+            </div>
+            {% elif post.type == "lnk" %}
+            <div class="col-md-12">
+                <div class="card blue-grey darken-2">
+                    <div class="card-content">
+                        <a href="post/{{ post.id }}" class="white-text">
+                            <span class="card-title">{{ post.title }}</span>
+                        </a>
+                        <p>
+                            <a href="{{ post.url }}" target="_blank">{{ post.url }}</a>
+                        </p>
+                    </div>
+                    <div class="card-action">
+                        <a class="voteNum" id="votesFor{{ post.id }}">NA</a>
+                        <a id="{{ post.id }}upvote" class="upvote">
+                            <i class="material-icons">arrow_upward</i>
+                        </a>
+                        <a id="{{ post.id }}downvote" class="downvote">
+                            <i class="material-icons">arrow_downward</i>
+                        </a>
+                        {% if post.postedBy == request.user.username %}
+                        <a href="post/{{ post.id }}/del">
+                            <i class="material-icons">delete</i>
+                        </a>
+                        {% endif %}
+                        <div class="chip right">By {{ post.postedBy }} </div>
+                        <div class="chip right">{{ post.created_date }}</div>
+                    </div>
+                </div>
+            </div>
+            {% endif %} {% if request.user.is_authenticated %}
+            <div class="col-md-12">
+                <div class="card blue-grey darken-2">
+                    <div class="card-content">
+                        <form method="post" action="{{ post.id }}/cc">
+                            {% csrf_token %}
+                            <p class="card-title">Comment</p>
+                            <div class="form-group">
+                                <input name="body" type="text" class="form-control" placeholder="What do you want to say about this garbage, {{ request.user }}?">
+                            </div>
+                            <button type="submit" class="btn btn-default">Submit</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            {% endif %} {% for comment in post.comments.all %}
+            <div class="comment">
+                <div class="col-md-12">
+                    <div class="card blue-grey darken-2">
+                        <div class="card-content white-text">
+                            <p>{{ comment.body }} </p>
+                        </div>
+                        <div class="card-action">
+                            <a class="voteNum" id="votesFor{{ post.id }}_{{ comment.id }}">NA</a>
+                            <a id="{{ post.id }}_{{ comment.id }}upvote" postid="{{ post.id }}" commentid="{{ comment.id }}"
+                                class="upvoteC">
+                                <i class="material-icons">arrow_upward</i>
+                            </a>
+                            <a id="{{ post.id }}_{{ comment.id }}downvote" postid="{{ post.id }}" commentid="{{ comment.id }}"
+                                class="downvoteC">
+                                <i class="material-icons">arrow_downward</i>
+                            </a>
+                            {% if comment.postedBy == request.user.username %}
+                            <a href="{{ post.id }}/{{ comment.id }}/del">
+                                <i class="material-icons">delete</i>
+                            </a>
+                            {% endif %}
+                            <div class="chip right">By {{ comment.postedBy }} </div>
+                            <div class="chip right">{{ comment.created_date }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <h4 class="grey-text empty">No comments</h4>
+            {% endfor %}
+        </div>
+        <script>
+            $(document).ready(function () {
+                function getPostVotes() {
+                    $.ajax({
+                        type: "POST",
+                        url: '../../votes',
+                        data: {
+                            'csrfmiddlewaretoken': '{{ csrf_token }}'
+                        },
+                        dataType: "json",
+                        success: function (response) {
+                            var voteVals = response[0]
+                            var userInteractions = response[
+                                1]
+                            for (var val in voteVals) {
+                                $("#votesFor" + val).text(
+                                    voteVals[val]);
+                            }
+                            for (var val in
+                                    userInteractions) {
+                                if (userInteractions[val][0] &&
+                                    userInteractions[val][1] ==
+                                    "upvote") {
+                                    $("#" + val + "upvote")
+                                        .addClass(
+                                            "activeUp");
+                                    $("#" + val +
+                                        "downvote").removeClass(
+                                        "activeDown");
+                                } else if (userInteractions[
+                                        val][0] &&
+                                    userInteractions[val][1] ==
+                                    "downvote") {
+                                    $("#" + val +
+                                        "downvote").addClass(
+                                        "activeDown");
+                                    $("#" + val + "upvote")
+                                        .removeClass(
+                                            "activeUp");
+                                } else {
+                                    $("#" + val + "upvote")
+                                        .removeClass(
+                                            "activeUp");
+                                    $("#" + val +
+                                        "downvote").removeClass(
+                                        "activeDown");
+                                }
+                            }
+                        },
+                    });
+                }
+                getPostVotes()
+
+                function getCommentVotes() {
+                    $.ajax({
+                        type: "POST",
+                        url: '{{ post.id }}/votes',
+                        data: {
+                            'csrfmiddlewaretoken': '{{ csrf_token }}'
+                        },
+                        dataType: "json",
+                        success: function (response) {
+                            var voteVals = response[0]
+                            var userInteractions = response[
+                                1]
+                            for (var val in voteVals) {
+                                $("#votesFor{{ post.id }}_" +
+                                    val).text(
+                                    voteVals[val]);
+                            }
+                            for (var val in
+                                    userInteractions) {
+                                if (userInteractions[val][0] &&
+                                    userInteractions[val][1] ==
+                                    "upvote") {
+                                    $("#{{ post.id }}_" +
+                                            val + "upvote")
+                                        .addClass(
+                                            "activeUp");
+                                    $("#{{ post.id }}_" +
+                                        val +
+                                        "downvote").removeClass(
+                                        "activeDown");
+                                } else if (userInteractions[
+                                        val][0] &&
+                                    userInteractions[val][1] ==
+                                    "downvote") {
+                                    $("#{{ post.id }}_" +
+                                        val +
+                                        "downvote").addClass(
+                                        "activeDown");
+                                    $("#{{ post.id }}_" +
+                                            val + "upvote")
+                                        .removeClass(
+                                            "activeUp");
+                                } else {
+                                    $("#{{ post.id }}_" +
+                                            val + "upvote")
+                                        .removeClass(
+                                            "activeUp");
+                                    $("#{{ post.id }}_" +
+                                        val +
+                                        "downvote").removeClass(
+                                        "activeDown");
+                                }
+                            }
+                        },
+                    });
+                }
+                getCommentVotes()
+
+                function dvotePost(postid, voteType) {
+                    $.ajax({
+                        type: "POST",
+                        url: '/post/' + postid + '/' + voteType,
+                        data: {
+                            'postid': $(this).attr('postid'),
+                            'csrfmiddlewaretoken': '{{ csrf_token }}',
+                        },
+                        dataType: "json",
+                        success: function (response) {
+                            getPostVotes()
+                        },
+                    });
+                }
+
+                function dvoteCom(postid, commentid, voteType) {
+                    $.ajax({
+                        type: "POST",
+                        url: '/post/' + postid + '/' +
+                            commentid +
+                            '/' + voteType,
+                        data: {
+                            'postid': $(this).attr('postid'),
+                            'commentid': $(this).attr(
+                                'commentid'),
+                            'csrfmiddlewaretoken': '{{ csrf_token }}',
+                        },
+                        dataType: "json",
+                        success: function (response) {
+                            getCommentVotes()
+                        },
+                    });
+                }
+                $(".upvote").click(function () {
+                    var id = $(this).attr("id");
+                    var postid = id.slice(0, -6)
+                    var type = id.slice(-6)
+                    dvotePost(postid, type)
+                });
+                $(".downvote").click(function () {
+                    var id = $(this).attr("id");
+                    var postid = id.slice(0, -8)
+                    var type = id.slice(-8)
+                    dvotePost(postid, type)
+                });
+                $(".upvoteC").click(function () {
+                    var id = $(this).attr("id");
+                    var type = id.slice(-6)
+                    var postid = $(this).attr("postid");
+                    var commentid = $(this).attr("commentid");
+                    dvoteCom(postid, commentid, type)
+                });
+                $(".downvoteC").click(function () {
+                    var id = $(this).attr("id");
+                    var type = id.slice(-8)
+                    var postid = $(this).attr("postid");
+                    var commentid = $(this).attr("commentid");
+                    dvoteCom(postid, commentid, type)
+                });
+            });
+        </script>
+        {% endblock content %}
+</body>
+
+</html>

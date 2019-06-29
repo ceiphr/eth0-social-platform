@@ -1,0 +1,63 @@
+*{
+    outline: none !important;
+    text-decoration: none !important;
+}
+
+.container {
+    position: relative;
+    top: 75px;
+}
+
+.upvote, .downvote {
+    cursor: pointer;
+}
+
+.form-card {
+    left: 50%;
+    transform: translate(-50%)
+}
+
+.card, .card-action {
+    border-radius: 8px !important;
+}
+
+.tabs, .card-image img {
+    border-top-right-radius: 8px !important;
+    border-top-left-radius: 8px !important;
+}
+
+.tabs {
+    width: 100%;
+}
+
+.tab a {
+    outline: none !important;
+    text-decoration: none !important;
+    color: white !important;
+}
+
+.tabs .indicator {
+    background-color: white !important;
+}
+
+a:hover {
+    text-decoration: none !important;
+}
+
+input, label {
+    color: white !important;
+}
+
+.postingAs {
+    padding-top: 5px;
+}
+
+.voteNum {
+    position: relative;
+    font-size: 18px;
+}
+
+.by, .date {
+    color: lightgrey !important;
+    font-size: 14px !important;
+}

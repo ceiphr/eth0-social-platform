@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+<html>
+
+<body>
+    {% block content %} {% load staticfiles %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/login.css' %}">
+    <div class="container card-panel blue-grey darken-2">
+        <h3>Sign up</h3>
+        <form method="post">
+            {% csrf_token %} {{ form.as_p }}
+            <button class="btn" type="submit">Sign up</button>
+        </form>
+    </div>
+    {% endblock %}
+</body>
+
+</html>

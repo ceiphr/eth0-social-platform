@@ -1,0 +1,48 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Eth0: Another social network</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/index.css' %}">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+        integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+        crossorigin="anonymous">
+    <!--Import Google Icon Font-->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="{% static 'bower_components/materialize/dist/css/materialize.min.css' %}">
+
+    <link rel="stylesheet" type="text/css" href="{% static 'css/base.css' %}">
+</head>
+
+<body class="blue-grey darken-4">
+    <nav>
+        <div class="nav-wrapper blue-grey darken-3">
+            <a href="/" class="brand-logo">Eth0</a>
+            <ul id="nav-mobile" class="right">
+                {% if not request.user.is_authenticated %}
+                <li>
+                    <a href="/accounts/login/">Log In</a>
+                </li>
+                <li>
+                    <a href="/accounts/signup/">Sign Up</a>
+                </li>
+                {% else %}
+                <li>
+                    <p class="signedIn">Signed in as {{ request.user.username }}.</p>
+                </li>
+                <li>
+                    <a href="/accounts/logout/">Log Out</a>
+                </li>
+                {% endif %}
+            </ul>
+        </div>
+    </nav>
+    <!-- Compiled and minified JavaScript -->
+    <script src="{% static 'bower_components/jQuery/dist/jquery.min.js' %}" crossorigin="anonymous"></script>
+    <script src="{% static 'bower_components/materialize/dist/js/materialize.min.js' %}"></script>
+    {% block content %}{% endblock content %}
+</body>
+
+</html>

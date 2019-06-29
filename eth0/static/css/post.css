@@ -1,0 +1,12 @@
+.by, .date {
+    color: lightgrey !important;
+    font-size: 12px !important;
+}
+
+.empty {
+    text-align: center;
+}
+
+.upvoteC, .downvoteC {
+    cursor: pointer;
+}

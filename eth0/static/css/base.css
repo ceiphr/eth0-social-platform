@@ -1,0 +1,46 @@
+body {
+    color: white;
+}
+
+nav {
+    position: fixed;
+    z-index: 1000;
+}
+
+nav a {
+    transition: 0.5s !important;
+    color: white !important;
+}
+
+nav a:hover {
+    color: #039be5;
+}
+
+nav ul a:hover {
+    color: #37474f  !important;
+    background: white !important;
+}
+
+.signedIn {
+    padding-right: 8px;
+}
+
+.brand-logo {
+    padding-left: 8px !important;
+}
+
+.card .card-action a:not(.btn):not(.btn-large):not(.btn-large):not(.btn-floating) {
+    color: white
+}
+
+.card .card-action a:not(.btn):not(.btn-large):not(.btn-large):not(.btn-floating):hover {
+    color: lightgray
+}
+
+.activeUp {
+    color: orange !important;
+}
+
+.activeDown {
+    color: lightskyblue !important;
+}
